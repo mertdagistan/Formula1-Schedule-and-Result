@@ -35,7 +35,7 @@ export default {
 };
 
 function lastResult() {
-  return fetch(`http://ergast.com/api/f1/current/last/results.json`);
+  return fetch(`https://ergast.com/api/f1/current/last/results.json`);
 }
 </script>
 
