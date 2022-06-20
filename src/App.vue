@@ -5,39 +5,39 @@ import Header from "@/components/Header.vue";
 import SessionBar from "@/components/SessionBar.vue";
 </script>
 
-
-
 <script>
 import axios from "axios";
 
 export default {
   mounted() {
-    lastResult().then((response) => {
-      const race = response.data.MRData.RaceTable;
+    lastResult()
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        const race = data.MRData.RaceTable;
 
-      this.$store.commit("setRaceId", race.Races[0].Circuit.circuitId);
-      this.$store.commit("setRaceRound", race.round);
-      this.$store.commit("setRaceSeason", race.season);
-      this.$store.commit("setHeaderTitle", race.Races[0].raceName);
+        this.$store.commit("setRaceId", race.Races[0].Circuit.circuitId);
+        this.$store.commit("setRaceRound", race.round);
+        this.$store.commit("setRaceSeason", race.season);
+        this.$store.commit("setHeaderTitle", race.Races[0].raceName);
 
-      this.$router.push({
-        name: "race",
-        params: {
-          year: race.season,
-          circuitId: race.Races[0].Circuit.circuitId,
-        },
+        this.$router.push({
+          name: "race",
+          params: {
+            year: race.season,
+            circuitId: race.Races[0].Circuit.circuitId,
+          },
+        });
+
+        console.log("race", race);
       });
-
-      console.log("race", race);
-    });
   },
 };
 
 function lastResult() {
-  return axios.get(`http://ergast.com/api/f1/current/last/results.json`);
+  return fetch(`http://ergast.com/api/f1/current/last/results.json`);
 }
 </script>
-
 
 <template>
   <div class="container-fluid" v-if="this.$store.state.selectedRace.id">
@@ -52,7 +52,6 @@ function lastResult() {
   </div>
 </template>
 
-
 <style>
 @import "@/assets/base.css";
 @import "/node_modules/bootstrap/dist/css/bootstrap.min.css";
@@ -63,10 +62,10 @@ function lastResult() {
   padding: 0;
 }
 body {
-  border-top: 4px solid #DC0000;
-  background-color: #15151E;
+  border-top: 4px solid #dc0000;
+  background-color: #15151e;
   color: #fff;
-  font-family: 'Rubik', sans-serif;
+  font-family: "Rubik", sans-serif;
   /* center the table horizontally */
   display: flex;
   flex-direction: column;
@@ -81,11 +80,10 @@ a:hover {
   color: black;
 }
 
-
 main {
   padding-right: 15px;
   padding-left: 15px;
-  background-color: #15151E;
+  background-color: #15151e;
   position: fixed;
   display: block;
   overflow: hidden;

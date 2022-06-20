@@ -19,7 +19,6 @@ import { mapActions } from "vuex";
   </div>
 </template>
 
-
 <script>
 import axios from "axios";
 export default {
@@ -49,27 +48,29 @@ export default {
     getDataList(changeYear) {
       let year = this.$route.params.year;
       this.year = year;
+      fetch(`https://ergast.com/api/f1/${year}.json`)
+        .then((response) => response.json())
+        .then((data) => {
+          this.circiutList = [];
+          this.circiutList = data.MRData.RaceTable.Races;
 
-      axios.get(`http://ergast.com/api/f1/${year}.json`).then((response) => {
-        this.circiutList=[];
-        this.circiutList = response.data.MRData.RaceTable.Races;
+          if (changeYear === true) {
+            const d = data.MRData.RaceTable.Races[0];
+            this.$store.commit("setHeaderTitle", d.raceName);
+            this.$store.commit("setRaceId", d.Circuit.circuitId);
+            this.$store.commit("setRaceSeason", d.season);
+            this.$store.commit("setRaceRound", d.round);
+            this.$router.push({
+              name: "race",
+              params: {
+                year: d.season,
+                circuitId: d.Circuit.circuitId,
+              },
+            });
+          }
+        });
 
-        if (changeYear === true) {
-          const data = response.data.MRData.RaceTable.Races[0];
-          console.log("data", data);
-          this.$store.commit("setHeaderTitle", data.raceName);
-          this.$store.commit("setRaceId", data.Circuit.circuitId);
-          this.$store.commit("setRaceSeason", data.season);
-          this.$store.commit("setRaceRound", data.round);
-          this.$router.push({
-            name: "race",
-            params: {
-              year: data.season,
-              circuitId: data.Circuit.circuitId,
-            },
-          });
-        }
-      });
+     
     },
   },
   watch: {
@@ -86,7 +87,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .circiut-list {
