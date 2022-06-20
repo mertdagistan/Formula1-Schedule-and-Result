@@ -62,7 +62,7 @@ export default {
       let round = this.$store.state.selectedRace.round;
 
       fetch(
-        `http://ergast.com/api/f1/${year}/${round}/results.json`
+        `https://ergast.com/api/f1/${year}/${round}/results.json`
       )
         .then((response) => response.json())
         .then((data) => {
