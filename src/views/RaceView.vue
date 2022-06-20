@@ -60,13 +60,15 @@ export default {
     getData() {
       let year = this.$store.state.selectedRace.season;
       let round = this.$store.state.selectedRace.round;
-      axios
-        .get(`http://ergast.com/api/f1/${year}/${round}/results.json`)
-        .then((response) => {
-          // this.gridList = response.data.MRData.RaceTable.Races[0].Results;
-          this.gridList = [];
-          if (response.data.MRData.RaceTable.Races.length > 0) {
-            response.data.MRData.RaceTable.Races[0].Results.forEach((e) => {
+
+      fetch(
+        `http://ergast.com/api/f1/${year}/${round}/results.json`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+           this.gridList = [];
+          if (data.MRData.RaceTable.Races.length > 0) {
+            data.MRData.RaceTable.Races[0].Results.forEach((e) => {
               this.gridList.push({
                 Position: e.position,
                 Name: e.Driver.givenName + " " + e.Driver.familyName,
@@ -80,6 +82,7 @@ export default {
             });
           }
         });
+    
     },
   },
   watch: {
